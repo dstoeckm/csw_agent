@@ -9,6 +9,7 @@ Requirements
 to install the agent into the right context admins need to have the name of the Tenant available and an inventory file as a list of IP addresses:
 
 10.1.96.10
+
 10.1.89.15
 
 a sample version is provided also.
