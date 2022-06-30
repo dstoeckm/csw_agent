@@ -1,0 +1,6 @@
+---
+# Tetratioin Provider
+
+api_key_var: "ad0d4b1b98f44622b8918ef9eede0ad8"
+api_secret_var: "981d54af8b7812a4d999c6c7e4958fc433f0e48a"
+server_endpoint_var: "https://plx.cisco.com"
