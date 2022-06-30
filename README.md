@@ -24,7 +24,7 @@ Dependencies
 The .sh installer for each Tenant need to be pushed into the file folder under the role of "cws-install" and "csw-upgrade" the {{ csw_tenant }} variable will be used to indentify the Tenant. as example: the installation script for the tenant duslab is use to install by this scrip tetration_installer_duslab_enforcer_linux.sh. So the admin need to push the installer script into roles/csw-install/files and roles/csw-upgrade/files .
 executing the Playbook, there will be an interactive question regarding the Tenant.
 
-To have the right format of the CSW access key / secret, copy the CSW_access_.yml.example to all.yml in the group_vars folder and edit your information.
+To have the right format of the CSW access key / secret, copy the CSW_access-all.yml-.example to all.yml in the group_vars folder and edit your information.
 
 Example Playbook
 ----------------
