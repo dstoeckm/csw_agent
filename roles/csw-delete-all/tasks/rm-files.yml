@@ -1,0 +1,23 @@
+---
+# tasks file for rm-tet-sensor
+
+#- name: REMOVE ALL FILES from /usr/local/tet
+#  command: "rm -rf /usr/local/tet/"
+- name: REMOVE ALL FILES from /usr/local/tet
+  file:
+    path: /usr/local/tet
+    state: absent
+#- name: REMOVE ALL Tetration sensor FILES from /tmp/
+##  command: "rm -rf /tmp/plx2_tetration_installer_default_enforcer_linux.sh"
+#  file:
+#    path: /tmp/tetration_installer_{{ csw_tenant }}_enforcer_linux_plx.sh
+#    state: absent
+- find:
+    paths: /tmp
+    patterns: "*.sh"
+  register: find_sh_script
+
+- file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items: "{{ find_sh_script['files'] }}"

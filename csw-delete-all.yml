@@ -1,0 +1,22 @@
+---
+# ======================================================================
+#       PLAY -- remove a Cisco Secure Workload agent from a target host
+#       in the inventory file and! the cert folder
+# ======================================================================
+
+- name: install a Cisco Secure Workload agent
+  hosts: all
+  gather_facts: true
+  become: yes
+  remote_user: root
+  become_method: sudo
+
+  vars_prompt:
+      - name: "delete"
+        prompt: "this play is uninstalling the Tetration sensor. Additional if you answer Y or y it will delete all files including Certificates ==> no way back!?"
+        private: no
+        default: "N"
+
+  roles:
+    - csw-delete-all # when you delete the cert folder, you must also delet the agent record from the cluster. Always include the csw-remove-cluster role
+#    - csw-remove-from-cluster

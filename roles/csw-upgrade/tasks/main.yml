@@ -1,0 +1,55 @@
+---
+# tasks file for csw-upgrade
+
+- name: Check Service facts
+  service_facts:
+
+- name: skip failure if Cisco Secure Workload agent is not installed
+  fail:
+   msg: Cisco Secure Workload agent is not runnning! Please use installer script instead of upgrade.
+  when: ansible_facts.services["tet-sensor.service"] is undefined
+
+- name: push Installer Scrip to /tmp tetration_installer_enforcer_linux.sh
+  copy: src=tetration_installer_{{ csw_tenant }}_enforcer_linux_plx.sh dest=/tmp mode='0744'
+
+- name: Execute the script installer in /tmp
+  script: tetration_installer_{{ csw_tenant }}_enforcer_linux_plx.sh --sensor-version={{ csw_version }} --reinstall
+  args:
+    chdir: /tmp/
+
+
+#########
+#
+# Command switch reference
+#
+#  Install
+#  Follow instructions for installing as described below.
+#  Click "Download Installer" button and save the file to local disk.
+#  Copy the installer shell script to all the Linux hosts for deployment.
+#  Run command chmod u+x tetration_installer_default_sensor_linux.sh to grant execute permission for the script. (note: the script name may differ depending on agent type and scope)
+#  Run command ./tetration_installer_default_sensor_linux.sh with root privilege to install agent.
+#  The usage of this installer script is as follows:
+#  $ bash tetration_linux_installer.sh [--pre-check] [--skip-pre-check=<option>] [--no-install] [--logfile=<filename>] [--proxy=<proxy_string>] [--no-proxy] [--help] [--version] [--sensor-version=<version_info>] [--ls] [--file=<filename>] [--save=<filename>] [--new] [--reinstall] [--unpriv-user] [--force-upgrade] [--upgrade-local] [--upgrade-by-uuid=<filename>] [--basedir=<basedir>] [--logbasedir=<logbdir>] [--visibility]
+#
+#  --pre-check: run pre-check only
+#  --skip-pre-check=<option>: skip pre-installation check by given option; Valid options include 'all', 'ipv6' and 'enforcement'; e.g.: '--skip-pre-check=all' will skip all pre-installation checks; All pre-checks will be performed by default
+#  --no-install: will not download and install sensor package onto the system
+#  --logfile=<filename>: write the log to the file specified by <filename>
+#  --proxy=<proxy_string>: set the value of CL_HTTPS_PROXY, the string should be formatted as http://<proxy>:<port>
+#  --no-proxy: bypass system wide proxy; this flag will be ignored if --proxy flag was provided
+#  --help: print this usage
+#  --version: print current script's version
+#  --sensor-version=<version_info>: select sensor's version; e.g.: '--sensor-version=3.4.1.0'; will download the latest version by default if this flag was not provided
+#  --ls: list all available sensor versions for your system (will not list pre-3.1 packages); will not download any package
+#  --file=<filename>: provide local zip file to install sensor instead of downloading it from cluster
+#  --save=<filename>: download and save zip file as <filename>
+#  --new: remove any previous installed sensor; previous sensor identity has to be removed from cluster in order for the new registration to succeed
+#  --reinstall: reinstall sensor and retain the same identity with cluster; this flag has higher priority than --new
+#  --unpriv-user=<username>: use <username> for unpriv processes instead of tet-sensor
+#  --force-upgrade: force sensor upgrade to version given by --sensor-version flag; e.g.: '--sensor-version=3.4.1.0 --force-upgrade'; apply the latest version by default if --sensor-version flag was not provided
+#  --upgrade-local: trigger local sensor upgrade to version given by --sensor-version flag: e.g.: '--sensor-version=3.4.1.0 --upgrade-local'; apply the latest version by default if --sensor-version flag was not provided
+#  --upgrade-by-uuid=<filename>: trigger sensor whose uuid is listed in <filename> upgrade to version given by --sensor-version flag; e.g.: '--sensor-version=3.4.1.0 --upgrade-by-uuid=/usr/local/tet/sensor_id'; apply the latest version by default if --sensor-version flag was not provided
+#  --basedir=<base_dir>: instead of using /usr/local use <base_dir> to install agent. The full path will be <base_dir>/tetration
+#  --logbasedir=<log_base_dir>: instead of logging to /usr/local/tet/log use <log_base_dir>. The full path will be <log_base_dir>/tetration
+#  --visibility: install deep visibility agent only; --reinstall would overwrite this flag if previous installed agent type was enforcer
+#

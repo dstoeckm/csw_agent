@@ -1,0 +1,15 @@
+---
+# tasks file for csw-delete
+- name: check if Cisco Secure Workload agent is installed
+  fail:
+   msg: Cisco Secure Workload agent is not runnning!
+  when: ansible_facts.services["tet-sensor.service"] is undefined
+
+- name: stop CSW service
+  include: stop-service.yml
+
+- name: remove CSW Agent Package
+  yum:
+    name:
+       - tet-sensor.x86_64
+    state: absent

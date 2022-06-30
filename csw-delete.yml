@@ -1,0 +1,15 @@
+---
+# ======================================================================
+#       PLAY -- remove a Cisco Secure Workload agent from a target host
+#       in the inventory file
+# ======================================================================
+
+- name: install a Cisco Secure Workload agent
+  hosts: all
+  gather_facts: true
+  become: yes
+  remote_user: root
+  become_method: sudo
+
+  roles:
+    - csw-delete

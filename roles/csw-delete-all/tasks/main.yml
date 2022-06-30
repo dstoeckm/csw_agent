@@ -1,0 +1,41 @@
+---
+# tasks file for csw-delete-all
+- name: Check if an agent is already running
+  service_facts:
+
+- name: check if Cisco Secure Workload agent is installed
+  fail:
+   msg: Cisco Secure Workload agent is not runnning!
+  when: ansible_facts.services["tet-main.service"] is undefined
+
+- name: stop CSW service
+  include: stop-service.yml
+
+- name: Find out what the remote agent UUID is
+  slurp:
+    src: /usr/local/tet/sensor_id
+  register: sensor_id
+
+# - debug: msg="the UUID in sensor_id is {{ sensor_id ['content'] | b64decode }}"
+
+- name: remove CSW Agent Package
+  yum:
+    name:
+       - tet-sensor.x86_64
+    state: absent
+
+- name: Include task list in play only if the condition is true
+  include: rm-files.yml
+  when: delete == "Y" or delete == "y"
+
+- name: remove agent from cluster
+  tetration_software_agent:
+#    UUID: cb450276b89c3b717a8d690973993eb41bb62d71 #"{{ sensor_id ['content'] | b64decode }}"
+    ip: "{{ ansible_default_ipv4.address }}"
+#    name: mdb-011
+    state: absent
+    provider: #"{{ plx }}"
+      server_endpoint: "{{ server_endpoint_var }}" #"tetration-cluster@company.com"
+      api_key: "{{ api_key_var }}"
+      api_secret: "{{ api_secret_var }}"
+  delegate_to: localhost

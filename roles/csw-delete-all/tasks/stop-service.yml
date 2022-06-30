@@ -1,0 +1,7 @@
+---
+# tasks file for rm-tet-sensor
+
+- name: Stop Tetration service
+  systemd: state=stopped name=tet-sensor.service enabled=no
+- name: Stop Tetration enforcer
+  systemd: state=stopped name=tet-enforcer.service enabled=no

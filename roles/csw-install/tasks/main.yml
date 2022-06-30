@@ -1,0 +1,35 @@
+---
+# tasks file for csw-install
+
+- name: Check if an agent is already running
+  service_facts:
+
+- name: skip failur msg if Cisco Secure Workload agent is already installed
+  fail:
+   msg: Cisco Secure Workload agent is already runnning!
+  when: ansible_facts.services["tet-sensor.service"] is defined
+
+- name: Install required OS system packages
+  package:
+      name:
+        - "lsof"
+        - "grep"
+        - "unzip"
+        - "sed"
+        - "dmidecode" # (version: >=2.11)
+        - "openssl"   # (version: >=0.9.8e)
+        - "curl"      # (version: >=7.15)
+        - "libcurl"   # (version: >=7.15)
+        - "rpm"
+        - "lsof"
+        - "ipset"     # (version: >=6.11-4)
+        - "iptables"
+      state: latest
+
+- name: push Installer Scrip to /tmp/tetration_installer_{{ csw_tenant }}_enforcer_linux.sh
+  copy: src=tetration_installer_{{ csw_tenant }}_enforcer_linux_plx.sh dest=/tmp mode='0744'
+
+- name: Execute the script installer in /tmp
+  script: tetration_installer_{{ csw_tenant }}_enforcer_linux_plx.sh
+  args:
+    chdir: /tmp/

@@ -1,0 +1,25 @@
+---
+# ======================================================================
+#       PLAY -- upgrade a Cisco Secure Workload agent on a target host
+#       in the inventory file to a version specified in the cli
+# ======================================================================
+
+- name: install a Cisco Secure Workload agent
+  hosts: all
+  gather_facts: true
+  become: yes
+  remote_user: root
+  become_method: sudo
+
+  vars_prompt:
+   - name: "csw_tenant"
+     prompt: "Enter Tenant to install the agent in"
+     private: no
+     default: "duslab"
+   - name: "csw_version"
+     prompt: "Enter the version in the notation of 3.6.0.1"
+     private: no
+     default: "3.6.1.17"
+
+  roles:
+    - csw-upgrade
